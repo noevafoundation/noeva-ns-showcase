@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>NOEVA · Network School Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=JetBrains+Mono:wght@400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    /* Palette */
+    --bg: #F2EEE5;
+    --bg-deep: #E8E2D3;
+    --ink: #1A1815;
+    --ink-soft: #2B2823;
+    --muted: #807A6E;
+    --rule: #C8C0AE;
+    --accent: #6B2A2F;
+    --accent-soft: #B89089;
+
+    /* Type scale */
+    --type-display: 124px;
+    --type-title: 72px;
+    --type-lede: 36px;
+    --type-card-h: 42px;
+    --type-body: 24px;
+    --type-mono: 24px;
+
+    /* Layout grid (fixed across slides) */
+    --pad-x: 120px;
+    --strip-y: 56px;       /* strip baseline from edges */
+    --rule-y: 110px;       /* horizontal rules */
+    --header-y: 180px;     /* top of header block */
+    --grid-y: 660px;       /* top of content grid */
+    --grid-h: 300px;       /* content grid height */
+
+    --gap-header: 32px;
+    --gap-card: 18px;
+    --gap-col: 72px;
+
+    --font-serif: 'Newsreader', 'Iowan Old Style', 'Georgia', serif;
+    --font-sans: 'Geist', 'Helvetica Neue', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  html, body { background: #0a0a0a; margin: 0; padding: 0; }
+  deck-stage { background: #0a0a0a; }
+
+  /* ---------- Slide chrome ---------- */
+  .slide {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide.alt { background: var(--bg-deep); }
+
+  .strip {
+    position: absolute;
+    top: var(--strip-y);
+    left: var(--pad-x);
+    right: var(--pad-x);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 24px;
+    color: var(--muted);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .strip span, .foot span { white-space: nowrap; }
+
+  .foot {
+    position: absolute;
+    bottom: var(--strip-y);
+    left: var(--pad-x);
+    right: var(--pad-x);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 24px;
+    color: var(--muted);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .rule {
+    position: absolute;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    height: 1px;
+    background: var(--rule);
+  }
+  .rule.top { top: var(--rule-y); }
+  .rule.bot { bottom: var(--rule-y); }
+
+  /* ---------- Header block (fixed Y across slides) ---------- */
+  .header {
+    position: absolute;
+    top: var(--header-y);
+    left: var(--pad-x);
+    right: var(--pad-x);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-header);
+  }
+  .header .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+  .header h1, .header h2 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: var(--type-title);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0;
+    max-width: 24ch;
+  }
+  .header em { font-style: italic; color: var(--accent); }
+  .header .lede {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: var(--type-lede);
+    line-height: 1.24;
+    letter-spacing: -0.012em;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 32ch;
+  }
+
+  /* ---------- Content grid (fixed Y across slides) ---------- */
+  .grid {
+    position: absolute;
+    top: var(--grid-y);
+    left: var(--pad-x);
+    right: var(--pad-x);
+    height: var(--grid-h);
+    display: grid;
+    gap: var(--gap-col);
+  }
+  .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-card);
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+  .card .tag {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+  .card .tag.accent { color: var(--accent); }
+  .card .heading {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: var(--type-card-h);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin: 0;
+    min-height: calc(var(--type-card-h) * 1.04 * 2);
+  }
+  .card .heading em { font-style: italic; color: var(--accent); }
+  .card .body {
+    font-family: var(--font-sans);
+    font-size: var(--type-body);
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ---------- Slide 1 (hook) – bespoke ---------- */
+  .s1 .display {
+    position: absolute;
+    top: var(--header-y);
+    left: var(--pad-x);
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 116px;
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin: 0;
+    white-space: nowrap;
+  }
+  .s1 .display em { font-style: italic; color: var(--accent); }
+  .s1 .lede-line {
+    position: absolute;
+    top: 530px;
+    left: var(--pad-x);
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: var(--type-lede);
+    line-height: 1.24;
+    letter-spacing: -0.012em;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 30ch;
+  }
+  .s1 .meta {
+    position: absolute;
+    top: 760px;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  .s1 .meta .label {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px 0;
+  }
+  .s1 .meta .value {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.15;
+  }
+  .s1 .glyph {
+    position: absolute;
+    right: var(--pad-x);
+    top: 170px;
+    width: 360px;
+    height: 360px;
+  }
+  .s1 .glyph circle { fill: none; stroke: var(--rule); stroke-width: 1; }
+  .s1 .glyph .dot { fill: var(--accent); }
+  .s1 .glyph .core { fill: var(--ink); }
+  .s1 .glyph text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 220px;
+    fill: var(--accent);
+  }
+
+  /* Slide 5 closer */
+  .s5 .ask {
+    position: absolute;
+    top: 820px;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 60px;
+  }
+  .s5 .ask .quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    max-width: 56ch;
+    margin: 0;
+  }
+  .s5 .ask .sig {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+</style>
+
+<script type="application/json" id="speaker-notes">
+[
+  "Hi, I'm Louise Bishop, founder of NOEVA Foundation. I've got two minutes, so I'll be direct. AI has changed my life. It's given me a sparring partner that can keep up with my questioning, and through that, more visibility into who I actually am. I describe AI as a what if engine, once you empty your mind of some answered threads via insights, it allows you to dream bigger and solve bigger problems. But at what cost? And who benefits? That experience is the reason I'm building what I'm building.",
+  "Let me set the context fast. We're facing real turbulence in planetary systems, and whether you think climate change is human-caused or just a cycle, the result for us is the same. We need our collective imagination to face it. At the same time, AI is going to automate most jobs. I think around eighty percent eventually. And meanwhile, we keep building companies that inherit the same extractive structures we already had. That's the loop I want to break.",
+  "I think the break starts at the individual. Sovereign identity. For me, privacy isn't about hiding – privacy means safety. The question I keep coming back to is, do you feel comfortable being seen, and do you feel comfortable other people seeing you. Everything else flows from there. So NOEVA gives the data back to you, inside an architecture others can build on, by your permission.",
+  "Here's what I've been working on at Network School. Data protocols – granular, revocable control over what you share, with who, and when. A safety kernel where the constraints live inside the protocol itself, with no setting to switch them off, even for me. Cryptography borrowed from Zcash, applied to identity rather than money. And a multi-vendor agent setup, because what I'm doing is genuinely complicated – Claude, Cursor, Antigravity, OpenAI and Gemini, in defined lanes, with me as arbiter.",
+  "Two things I want to build next at NS. A reference sovereign-identity implementation for the school itself – a working artefact, built openly here. And adaptive content protocols, so ecosystems can actually learn from the people using them, fully user controlled. I believe we all have something to give. NOEVA is how I'm trying to make that visible. Thank you."
+]
+</script>
+
+<script src="deck-stage.js"></script>
+</head>
+<body>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- ===================== SLIDE 1 – HOOK ===================== -->
+  <section data-label="01 Hook">
+    <div class="slide s1">
+      <div class="strip">
+        <span>01 / HOOK</span>
+        <span>NOEVA · NETWORK SCHOOL · 2026</span>
+      </div>
+      <div class="rule top"></div>
+
+      <svg class="glyph" viewBox="0 0 360 360" aria-hidden="true">
+        <circle cx="180" cy="180" r="172" />
+        <circle cx="180" cy="180" r="124" />
+        <circle cx="180" cy="180" r="72" />
+        <circle class="core" cx="180" cy="180" r="5" />
+        <circle class="dot" cx="332" cy="220" r="6" />
+        <circle class="dot" cx="74" cy="98" r="4" />
+        <circle class="dot" cx="244" cy="62" r="4" />
+      </svg>
+
+      <h1 class="display">AI changed my <em>life.</em></h1>
+      <p class="lede-line">So I'm building something because of that – and I want to tell you why.</p>
+
+      <div class="meta">
+        <div>
+          <p class="label">Speaker</p>
+          <p class="value">Louise Bishop</p>
+        </div>
+        <div>
+          <p class="label">Role</p>
+          <p class="value">Founder, NOEVA Foundation</p>
+        </div>
+        <div>
+          <p class="label">Working on</p>
+          <p class="value">Sovereign identity architecture</p>
+        </div>
+        <div>
+          <p class="label">Background</p>
+          <p class="value">~170 patents filed</p>
+        </div>
+      </div>
+
+      <div class="rule bot"></div>
+      <div class="foot">
+        <span>N – 01</span>
+        <span>SHOWCASE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SLIDE 2 – THE LOOP ===================== -->
+  <section data-label="02 The Loop">
+    <div class="slide alt">
+      <div class="strip">
+        <span>02 / CONTEXT</span>
+        <span>NOEVA · NETWORK SCHOOL · 2026</span>
+      </div>
+      <div class="rule top"></div>
+
+      <div class="header">
+        <p class="eyebrow">WHERE WE ARE</p>
+        <h2>The loop we keep running.</h2>
+        <p class="lede">Planetary turbulence. Work being automated. Companies inheriting the structures that caused the problem.</p>
+      </div>
+
+      <div class="grid cols-3">
+        <div class="card">
+          <p class="tag">PLANETARY</p>
+          <h3 class="heading">A speck through space.</h3>
+          <p class="body">Humans inside complex systems – the relationship is bidirectional. Understanding it could lift a lot of blame and shame.</p>
+        </div>
+        <div class="card">
+          <p class="tag">WORK</p>
+          <h3 class="heading">AI will automate most jobs.</h3>
+          <p class="body">Around 80% of jobs out there will eventually be automated. A redistribution of what work is, and what it is to be human.</p>
+        </div>
+        <div class="card">
+          <p class="tag">DEFAULTS</p>
+          <h3 class="heading">We inherit too much.</h3>
+          <p class="body">We build companies and inherit the structures that came before – structures that take too much from the planet and the people.</p>
+        </div>
+      </div>
+
+      <div class="rule bot"></div>
+      <div class="foot">
+        <span>N – 02</span>
+        <span>THE LOOP</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SLIDE 3 – THESIS ===================== -->
+  <section data-label="03 Thesis">
+    <div class="slide">
+      <div class="strip">
+        <span>03 / THESIS</span>
+        <span>NOEVA · NETWORK SCHOOL · 2026</span>
+      </div>
+      <div class="rule top"></div>
+
+      <div class="header">
+        <p class="eyebrow">WHERE I THINK IT STARTS</p>
+        <h2>Sovereign identity.</h2>
+        <p class="lede">Individuals are where the patterns start. So individuals are where the fix has to begin too.</p>
+      </div>
+
+      <div class="grid cols-3">
+        <div class="card">
+          <p class="tag accent">01</p>
+          <h3 class="heading">Privacy means <em>safety.</em></h3>
+          <p class="body">Privacy isn't about hiding. It's the trust to understand yourself, without fear of a system using it against you.</p>
+        </div>
+        <div class="card">
+          <p class="tag accent">02</p>
+          <h3 class="heading">Safe being seen.</h3>
+          <p class="body">Do you feel comfortable being seen, and seeing other people? Everything else flows from there.</p>
+        </div>
+        <div class="card">
+          <p class="tag accent">03</p>
+          <h3 class="heading">Take the data back.</h3>
+          <p class="body">Your insights are buried across systems that profit from them. NOEVA gives that back – others can build on it, by your permission.</p>
+        </div>
+      </div>
+
+      <div class="rule bot"></div>
+      <div class="foot">
+        <span>N – 03</span>
+        <span>THESIS</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SLIDE 4 – IN-FLIGHT ===================== -->
+  <section data-label="04 What I'm Building">
+    <div class="slide alt">
+      <div class="strip">
+        <span>04 / IN-FLIGHT AT NS</span>
+        <span>NOEVA · NETWORK SCHOOL · 2026</span>
+      </div>
+      <div class="rule top"></div>
+
+      <div class="header">
+        <p class="eyebrow">WHAT I'VE BEEN BUILDING</p>
+        <h2>Similar to Zcash<br/>– for <em>identity.</em></h2>
+        <p class="lede">Four pieces of the architecture, in active development at Network School.</p>
+      </div>
+
+      <div class="grid cols-4">
+        <div class="card">
+          <p class="tag">DATA</p>
+          <h3 class="heading">Revocability &amp; ephemerality.</h3>
+          <p class="body">Granular, revocable consent over what you share, with who, and for how long. Nothing sticks by default.</p>
+        </div>
+        <div class="card">
+          <p class="tag">KERNEL</p>
+          <h3 class="heading">Safety in the protocol.</h3>
+          <p class="body">Constraints live inside the kernel itself. No setting to switch them off – not even for me.</p>
+        </div>
+        <div class="card">
+          <p class="tag">CRYPTO</p>
+          <h3 class="heading">Selective disclosure.</h3>
+          <p class="body">Zero-knowledge techniques from Zcash, applied to who you are – not what you own.</p>
+        </div>
+        <div class="card">
+          <p class="tag">AGENTS</p>
+          <h3 class="heading">Multi-vendor orchestration.</h3>
+          <p class="body">Claude, Cursor, Antigravity, OpenAI and Gemini in defined lanes – with me as arbiter.</p>
+        </div>
+      </div>
+
+      <div class="rule bot"></div>
+      <div class="foot">
+        <span>N – 04</span>
+        <span>IN-FLIGHT</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SLIDE 5 – NEXT / ASK ===================== -->
+  <section data-label="05 What's Next">
+    <div class="slide s5">
+      <div class="strip">
+        <span>05 / NEXT</span>
+        <span>NOEVA · NETWORK SCHOOL · 2026</span>
+      </div>
+      <div class="rule top"></div>
+
+      <div class="header">
+        <p class="eyebrow">WHAT I WANT TO BUILD HERE</p>
+        <h2>Two things, openly,<br/>at Network School.</h2>
+      </div>
+
+      <div class="grid cols-2" style="--grid-y: 460px; --grid-h: 280px;">
+        <div class="card">
+          <p class="tag accent">REFERENCE</p>
+          <h3 class="heading">A sovereign identity example for NS.</h3>
+          <p class="body">A working artefact, built openly here, that shows how the whole architecture composes end to end.</p>
+        </div>
+        <div class="card">
+          <p class="tag accent">ADAPTIVE</p>
+          <h3 class="heading">Adaptive content protocols.</h3>
+          <p class="body">Ecosystems that genuinely learn from the people using them. Completely user controlled, completely user guided.</p>
+        </div>
+      </div>
+
+      <div class="ask">
+        <p class="quote">"I believe we all have something to give. NOEVA is how I'm trying to make it visible."</p>
+        <p class="sig">– Thank you</p>
+      </div>
+
+      <div class="rule bot"></div>
+      <div class="foot">
+        <span>N – 05</span>
+        <span>THE ASK</span>
+      </div>
+    </div>
+  </section>
+
+</deck-stage>
+
+</body>
+</html>
