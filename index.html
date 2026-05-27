@@ -539,5 +539,55 @@
 
 </deck-stage>
 
+<div id="notes-bar">
+  <p id="notes-text"></p>
+</div>
+
+<style>
+  #notes-bar {
+    background: #1a1815;
+    color: #d4d0c8;
+    font-family: 'Geist', 'Helvetica Neue', sans-serif;
+    font-size: 18px;
+    line-height: 1.5;
+    padding: 24px 40px;
+    max-height: 180px;
+    overflow-y: auto;
+    border-top: 1px solid #333;
+  }
+  #notes-bar.hidden { display: none; }
+  #notes-text { margin: 0; }
+</style>
+
+<script>
+  (function () {
+    const notesEl = document.getElementById('notes-text');
+    const bar = document.getElementById('notes-bar');
+    let notes = [];
+    try {
+      notes = JSON.parse(document.getElementById('speaker-notes').textContent);
+    } catch (e) {}
+
+    function update(i) {
+      notesEl.textContent = notes[i] || '';
+    }
+
+    window.addEventListener('message', function (e) {
+      if (e.data && typeof e.data.slideIndexChanged === 'number') {
+        update(e.data.slideIndexChanged);
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'n' || e.key === 'N') {
+        bar.classList.toggle('hidden');
+      }
+    });
+
+    // Show first slide notes on load
+    update(0);
+  })();
+</script>
+
 </body>
 </html>
