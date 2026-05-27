@@ -44,8 +44,8 @@
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   }
 
-  html, body { background: #0a0a0a; margin: 0; padding: 0; }
-  deck-stage { background: #0a0a0a; }
+  html, body { background: #0a0a0a; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+  deck-stage { background: #0a0a0a; display: block; height: calc(100vh - 180px); }
 
   /* ---------- Slide chrome ---------- */
   .slide {
@@ -549,17 +549,17 @@
     bottom: 0;
     left: 0;
     right: 0;
+    height: 160px;
     z-index: 99999;
-    background: rgba(26, 24, 21, 0.95);
+    background: #1a1815;
     color: #d4d0c8;
     font-family: 'Geist', 'Helvetica Neue', sans-serif;
     font-size: 18px;
     line-height: 1.5;
     padding: 20px 40px;
-    max-height: 30vh;
     overflow-y: auto;
     border-top: 2px solid #6B2A2F;
-    backdrop-filter: blur(8px);
+    box-sizing: border-box;
   }
   #notes-bar.hidden { display: none; }
   #notes-text { margin: 0; }
