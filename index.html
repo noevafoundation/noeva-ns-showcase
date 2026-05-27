@@ -545,15 +545,21 @@
 
 <style>
   #notes-bar {
-    background: #1a1815;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    background: rgba(26, 24, 21, 0.95);
     color: #d4d0c8;
     font-family: 'Geist', 'Helvetica Neue', sans-serif;
     font-size: 18px;
     line-height: 1.5;
-    padding: 24px 40px;
-    max-height: 180px;
+    padding: 20px 40px;
+    max-height: 30vh;
     overflow-y: auto;
-    border-top: 1px solid #333;
+    border-top: 2px solid #6B2A2F;
+    backdrop-filter: blur(8px);
   }
   #notes-bar.hidden { display: none; }
   #notes-text { margin: 0; }
